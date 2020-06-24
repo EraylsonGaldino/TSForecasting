@@ -1,0 +1,15 @@
+from TSForecasting import loadfiles as lf
+from TSForecasting import preprocessing as pre
+from TSForecasting import predictors
+
+
+dados = lf.load_data_to_dataframe('airline.txt')
+dados_normalizados, sc  = pre.stand_interval(dados[0])
+tam_window = 5
+h_step = 1
+time_windows = pre.create_windows_to_numpy(dados_normalizados, tam_window, h_step)
+perc_train = 0.74
+X_train, y_train, X_test, y_test  = pre.split_series(time_windows, perc_train)
+mlp = predictors.generate_MLP()
+mlp = predictors.fit_sklearn(mlp,X_train, y_train)
+predictors.predict_sklearn(mlp, X_test)
