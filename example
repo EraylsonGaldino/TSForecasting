@@ -2,8 +2,8 @@ from TSForecasting import loadfiles as lf
 from TSForecasting import preprocessing as pre
 from TSForecasting import predictors
 
-
-dados = lf.load_data_to_dataframe('airline.txt')
+path = 'https://raw.githubusercontent.com/EraylsonGaldino/dataset_time_series/master/airline.txt'
+dados = lf.load_data_to_dataframe(path)
 dados_normalizados, sc  = pre.stand_interval(dados[0])
 tam_window = 5
 h_step = 1
