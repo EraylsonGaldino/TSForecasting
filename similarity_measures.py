@@ -133,7 +133,8 @@ def measure_distance(a, b, medida):
         return euclidean(a,b) 
 
     elif medida == 'dtw':
-        return dtw(a,b)
+        print('Distance Not Founded')
+        return None
 
     elif medida == 'cosine':
         return cosine(a,b)
@@ -160,20 +161,22 @@ def measure_distance(a, b, medida):
         return waveHedges(a,b)
 
     elif medida == 'edrs':
-        return edrs(a,b)
+        print('Not Founded')
+        return None
     
     elif medida == 'shape_dtw':
-        return shape_dtw(a, b)
+        print('Not Founded')
+        return None
 
     elif medida == 'sim_pocid':
-        return sim_pocid(a, b)
+        print('Not Founded')
+        return None
 
     elif medida == 'pocid_mape':
-        return pocid_mape(a,b)
+        print('Not Founded')
+        return None
 
-    else:
-        print('Medida não encontrada')
-        return 0
+    return None
 
 
 

@@ -6,7 +6,7 @@ Created on Sun Jun 14 15:39:50 2020
 """
 
 import numpy as np
-from tslibrary import predictors as p
+import predictors as p
 from sklearn.metrics import mean_squared_error as MSE
 
 def reamostragem(serie, n):

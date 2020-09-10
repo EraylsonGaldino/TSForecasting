@@ -172,6 +172,7 @@ def stand_interval(serie_real, min=0, max=1):
     
     scaler = MinMaxScaler(feature_range=(min, max)).fit(serie_real)
     serie_stand = scaler.transform(serie_real)
+    serie_stand = serie_stand.reshape(len(serie_stand))
     return serie_stand, scaler
     
 def stand_interval_inversed(serie_stand, scaler):

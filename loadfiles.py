@@ -1,3 +1,7 @@
+import pandas as pd
+import numpy as np
+
+
 def load_data_to_dataframe(path, delimiter=',', header=None):
     """Load a file, whether it is a CSV, txt or XLS file to the data frame format
         Args:
@@ -6,8 +10,8 @@ def load_data_to_dataframe(path, delimiter=',', header=None):
         Returns:
            The file loaded in the data frame format.
     """
-    from pandas import read_csv
-    return read_csv(path, delimiter= delimiter, header=header)
+    
+    return pd.read_csv(path, delimiter= delimiter, header=header)
 
 
 def load_data_to_numpy_from_gentxt(path):
@@ -17,8 +21,8 @@ def load_data_to_numpy_from_gentxt(path):
         Returns:
            The file loaded in the Numpy format.
     """
-    from numpy import genfromtxt
-    return genfromtxt(path, delimiter=',', names=True, autostrip=True)
+    
+    return np.genfromtxt(path, delimiter=',', names=True, autostrip=True)
 
 
 def load_data_to_numpy(path, delimiter=',', header=None):
@@ -29,6 +33,6 @@ def load_data_to_numpy(path, delimiter=',', header=None):
         Returns:
            The file loaded in the Numpy format.
     """
-    from pandas import read_csv
+    
 
-    return read_csv(path, delimiter=delimiter, header = header).values
+    return pd.read_csv(path, delimiter=delimiter, header = header).values

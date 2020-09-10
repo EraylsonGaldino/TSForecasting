@@ -4,6 +4,9 @@ import preprocessing as pp
 path = 'dataset_example.csv'
 
 "Load and split as Data Frame"
+path = 'https://github.com/EraylsonGaldino/MaterialTS/blob/master/vendas_varejo.xlsx?raw=true'
+
+
 df = lf.load_data_to_dataframe(path)
 df_with_sliding_windows = pp.create_windows_to_dataframe(df, 6, 3)
 df_train_slinding, df_validation_slinding, df_test_slinding = pp.split_series(df_with_sliding_windows, 0.6, 0.2)
