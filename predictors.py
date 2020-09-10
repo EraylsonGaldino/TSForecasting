@@ -28,15 +28,37 @@ def generate_TREE(max_depth = 10, criterion="mse"):
     return DecisionTreeRegressor(max_depth=max_depth, criterion = criterion)
 
 
-def auto_SVR(X_train, y_train, perc_val = 0.33):
+def auto_SVR(X_train, y_train, perc_val = 0.33, level_grid = 'easy'):
+    """
+    train the SVR with values pre defined to hyper-param
+
+    perc_val: define the percentual value to create de validation sample
+    level_grid: difine the number of values of each hyper-param
+              values: 'easy', 'medium', 'hard'
+  
+    
+    """
+
+
     from sklearn.metrics import mean_squared_error as MSE
     import itertools
-    
-    
-    kernel =  ['rbf']#, 'sigmoid'] #['rbf', 'sigmoid', 'poly']
-    gamma =   [0.4, 4, 40, 400, 4000, 40000]
-    eps =   [0.01, 0.001, 0.0001, 0.00001, 0.000001]
-    C =   [0.1, 1,  10, 100, 1000]
+
+    if level_grid == 'easy':
+        kernel = ['rbf']
+        gamma = [0.1, 1]
+        eps= [0.1, 0.001]
+        C = [0.1, 10]
+    elif level_grid == 'medium':
+        kernel =  ['rbf', 'sigmoid'] 
+        gamma =   [0.1, 1, 1000, 10000]
+        eps =   [0.01, 0.001, 0.0001, 0.000001]
+        C =   [0.1, 1,  1000]
+    elif level_grid == 'hard':
+        kernel =  ['rbf', 'sigmoid', 'poly']
+        gamma =   [0.001, 0.1, 1, 1000, 10000]
+        eps =   [0.01, 0.001, 0.0001, 0.000001]
+        C =   [0.1, 1,  1000]    
+        
     
     hyper_param = list(itertools.product(kernel,gamma, eps, C ))
 
@@ -51,6 +73,7 @@ def auto_SVR(X_train, y_train, perc_val = 0.33):
     y_train = y_train[0:size_val]
     
     best_result = np.Inf
+    print('training the SVR with ', leval_grid, ' gridsearch')
 
     for k, g, e, c in hyper_param:
                 
@@ -65,6 +88,12 @@ def auto_SVR(X_train, y_train, perc_val = 0.33):
             select_model = svr
                         
     return select_model
+
+
+
+if __name__ == '__main__':
+    
+    
     
     
 
