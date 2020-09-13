@@ -36,3 +36,15 @@ def load_data_to_numpy(path, delimiter=',', header=None):
     
 
     return pd.read_csv(path, delimiter=delimiter, header = header).values
+
+
+
+if __name__ == '__main__':
+    path = 'https://raw.githubusercontent.com/EraylsonGaldino/dataset_time_series/master/airline.txt'
+    dados = load_data_to_numpy(path)
+    print('Shape:', dados.shape)
+    print('Type:', type(dados))
+
+    dados = load_data_to_dataframe(path)
+    print('Shape:', dados.shape)
+    print('Type:', type(dados))

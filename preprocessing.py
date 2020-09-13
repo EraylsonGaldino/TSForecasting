@@ -1,11 +1,11 @@
-
+import pandas as pd
 ### generate time windows 
 
 
 def create_windows_to_dataframe2(series, window_size, forecasting_step):
     from pandas import concat
 
-    cols, names = list(), list()
+    cols, _ = list(), list()
 
     for i in range(window_size, 0, -1):
         cols.append(series.shift(i))
@@ -85,29 +85,10 @@ def create_windows_to_numpy(series, window_size, number_of_targets):
     return array(create_list_of_sliding_windows(series.reshape(-1, ).tolist(), window_size, number_of_targets))
 
 
-def round_numbers(number):
-    """ Round a number.
-        Args:
-            number (float): Number to be rounded
-        Returns:
-            Rounded number. The number is rounded to its decimal place. If the decimal number is more than 0.5, the
-            number is rounded upwards. Otherwise, it is rounded down.
-
-            For example:
-                7.6 is rounded to 8;
-                7.50 is rounded to 8;
-                7.49 is rounded to 7.
-    """
-    from math import floor, ceil
-    if number - floor(number) < 0.5:
-        return floor(number)
-    return ceil(number)
-
-
-def split_series(series, training_percentage, validation_percentage: float = 0.0):
+def split_series(series, training_percentage, validation_percentage):
     """ Function to divide the time series into subsamples.
         Args:
-            series (list): Time series
+            series: time windows sample (nxm)
             training_percentage(float): Percentage of the training sample.
             validation_percentage(float): Percentage of the validation sample.
         Returns:
@@ -115,17 +96,30 @@ def split_series(series, training_percentage, validation_percentage: float = 0.0
             subsamples are returned: training, validation and testing. If not, just two subsamples: training and
             testing.
     """
-    training_sample_size = round_numbers(len(series) * training_percentage)
+    if type(series) == type(pd.DataFrame()):
+        series_sample = series.to_numpy()
+    else:
+        series_sample = series
+        
+        
+
+
+    training_sample_size = round(len(series_sample) * training_percentage)
 
     if validation_percentage > 0:
-        validation_sample_size = round_numbers(len(series) * validation_percentage)
+        validation_sample_size = round(len(series_sample) * validation_percentage)
 
-        training_sample = series[0:training_sample_size]
-        validation_sample = series[training_sample_size:training_sample_size + validation_sample_size]
-        testing_sample = series[(training_sample_size + validation_sample_size):]
+        training_sample = series_sample[0:training_sample_size]
+        validation_sample = series_sample[training_sample_size:training_sample_size + validation_sample_size]
+        testing_sample = series_sample[(training_sample_size + validation_sample_size):]
+
+        print('train', training_sample.shape)
+        print('val', validation_sample.shape)
+        print('test', testing_sample.shape)
+
         
         
-        X_train = training_sample[:, 0: -1]
+        X_train = training_sample[0:, 0: -1]
         y_train = training_sample[:, -1]
         X_val = validation_sample[:, 0:-1]
         y_val = validation_sample[:, -1]
@@ -195,3 +189,24 @@ def stand_log(serie_real):
 def stand_log_inversed(serie_stand):
     import numpy as np
     return np.exp(serie_stand)
+
+
+if __name__ == '__main__':
+    import loadfiles as lf
+
+    path = 'https://raw.githubusercontent.com/EraylsonGaldino/dataset_time_series/master/airline.txt'
+    window_size = 6
+    h_step = 2
+
+    training_perc = 0.6
+    val_perc = 0.2
+
+    "Load and split as Data Frame"
+    df = lf.load_data_to_dataframe(path)
+    df_with_sliding_windows = create_windows_to_dataframe(df, window_size, h_step)
+    print(df_with_sliding_windows.shape)
+
+
+    X_train, y_train, X_val, y_val, X_test, y_test = split_series(df_with_sliding_windows, training_perc, val_perc)
+    print(X_train.shape, X_val.shape, X_test.shape)
+

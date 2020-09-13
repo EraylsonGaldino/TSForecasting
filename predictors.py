@@ -73,7 +73,7 @@ def auto_SVR(X_train, y_train, perc_val = 0.33, level_grid = 'easy'):
     y_train = y_train[0:size_val]
     
     best_result = np.Inf
-    print('training the SVR with ', leval_grid, ' gridsearch')
+    print('training the SVR with ', level_grid, ' gridsearch')
 
     for k, g, e, c in hyper_param:
                 
@@ -92,18 +92,4 @@ def auto_SVR(X_train, y_train, perc_val = 0.33, level_grid = 'easy'):
 
 
 if __name__ == '__main__':
-    
-    
-    
-    
-
-
-
-
-
-
-
-
-
-
-
+    print('predictors...')
