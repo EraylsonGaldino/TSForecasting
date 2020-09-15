@@ -208,5 +208,5 @@ if __name__ == '__main__':
 
 
     X_train, y_train, X_val, y_val, X_test, y_test = split_series(df_with_sliding_windows, training_perc, val_perc)
-    print(X_train.shape, X_val.shape, X_test.shape)
+    print(X_train.shape, X_val.shape, X_test.shape)sou
 
