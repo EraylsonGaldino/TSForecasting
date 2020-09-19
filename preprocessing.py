@@ -85,34 +85,82 @@ def create_windows_to_numpy(series, window_size, number_of_targets):
     return array(create_list_of_sliding_windows(series.reshape(-1, ).tolist(), window_size, number_of_targets))
 
 
-def split_series(series, training_percentage, validation_percentage):
-    """ Function to divide the time series into subsamples.
+def split_series(series, training_percentage: float, validation_percentage: float):
+
+    """
+    Function to divide the time series into subsamples.
         Args:
-            series: time windows sample (nxm)
+            series: time windows sample (size of sample x size of the time window)
             training_percentage(float): Percentage of the training sample.
             validation_percentage(float): Percentage of the validation sample.
         Returns:
             A sample divided into subsamples. If the value of the validation percentage is different from zero, three
             subsamples are returned: training, validation and testing. If not, just two subsamples: training and
-            testing.
+            testing. 
+
+    
+    
     """
+
     if type(series) == type(pd.DataFrame()):
+        
         series_sample = series.to_numpy()
     else:
         series_sample = series
-        
-        
+    
 
 
-    training_sample_size = round(len(series_sample) * training_percentage)
+    if series.shape[1] <= 1 or series.shape[0] <= 1:
+
+        "split a univariate sample"
+        return split_univariate_serie(series_sample, training_percentage, validation_percentage)
+        
+
+    else:
+        "Split a multivariate sample"
+        return split_sample_with_windows(series_sample, training_percentage, validation_percentage)
+
+
+    return None
+
+
+def split_univariate_serie(series, training_percentage: float, validation_percentage: float):
+  
+    
+    training_sample_size = round(len(series) * training_percentage)
+
 
     if validation_percentage > 0:
-        validation_sample_size = round(len(series_sample) * validation_percentage)
+        validation_sample_size = round(len(series) * validation_percentage)
 
-        training_sample = series_sample[0:training_sample_size]
-        validation_sample = series_sample[training_sample_size:training_sample_size + validation_sample_size]
-        testing_sample = series_sample[(training_sample_size + validation_sample_size):]
+        training_sample = series[0:training_sample_size]
+        validation_sample = series[training_sample_size:training_sample_size + validation_sample_size]
+        testing_sample = series[(training_sample_size + validation_sample_size):]
 
+        return training_sample, validation_sample, testing_sample
+
+    else:
+        training_sample = series[0:training_sample_size]
+        testing_sample = series[training_sample_size:]
+
+        return training_sample, testing_sample
+
+
+
+def split_sample_with_windows(series, training_percentage, validation_percentage):
+    
+
+    training_sample_size = round(len(series) * training_percentage)
+
+    if validation_percentage > 0:
+        validation_sample_size = round(len(series) * validation_percentage)
+
+        training_sample = series[0:training_sample_size]
+        validation_sample = series[training_sample_size:training_sample_size + validation_sample_size]
+        testing_sample = series[(training_sample_size + validation_sample_size):]
+
+        
+        
         print('train', training_sample.shape)
         print('val', validation_sample.shape)
         print('test', testing_sample.shape)
@@ -196,17 +244,25 @@ if __name__ == '__main__':
 
     path = 'https://raw.githubusercontent.com/EraylsonGaldino/dataset_time_series/master/airline.txt'
     window_size = 6
-    h_step = 2
+    h_step = 1
 
     training_perc = 0.6
     val_perc = 0.2
 
-    "Load and split as Data Frame"
     df = lf.load_data_to_dataframe(path)
+
+    print('testing split less lags')
+    train_sample, validation_sample, test_sample = split_series(df, training_perc, val_perc)
+    train_window = create_windows_to_numpy (train_sample, window_size, h_step)
+    val_window = create_windows_to_numpy (validation_sample, window_size, h_step)
+    test_window = create_windows_to_numpy (test_sample, window_size, h_step)
+    print(train_window.shape, val_window.shape, test_window.shape)
+
+
+    print('testing split with lags first')    
+    
     df_with_sliding_windows = create_windows_to_dataframe(df, window_size, h_step)
     print(df_with_sliding_windows.shape)
-
-
     X_train, y_train, X_val, y_val, X_test, y_test = split_series(df_with_sliding_windows, training_perc, val_perc)
-    print(X_train.shape, X_val.shape, X_test.shape)sou
+    print(X_train.shape, X_val.shape, X_test.shape)
 
