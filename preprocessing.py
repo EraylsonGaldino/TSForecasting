@@ -157,15 +157,11 @@ def split_sample_with_windows(series, training_percentage, validation_percentage
 
         training_sample = series[0:training_sample_size]
         validation_sample = series[training_sample_size:training_sample_size + validation_sample_size]
-        testing_sample = series[(training_sample_size + validation_sample_size):]
-
-        
+        testing_sample = series[(training_sample_size + validation_sample_size):]        
         
         print('train', training_sample.shape)
         print('val', validation_sample.shape)
-        print('test', testing_sample.shape)
-
-        
+        print('test', testing_sample.shape)        
         
         X_train = training_sample[0:, 0: -1]
         y_train = training_sample[:, -1]
