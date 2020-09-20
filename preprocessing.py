@@ -85,7 +85,7 @@ def create_windows_to_numpy(series, window_size, number_of_targets):
     return array(create_list_of_sliding_windows(series.reshape(-1, ).tolist(), window_size, number_of_targets))
 
 
-def split_series(series, training_percentage: float, validation_percentage: float):
+def split_series(series, training_percentage: float, validation_percentage):
 
     """
     Function to divide the time series into subsamples.
