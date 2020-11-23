@@ -21,9 +21,9 @@ def create_windows_to_dataframe2(series, window_size, forecasting_step):
     return agg
 
 
-def create_list_of_sliding_windows(series, window_size, number_of_targets):
-    """Create a list of sliding windows from a time series.
-        Args:
+def create_list_of_sliding_windows(series, window_size, hstep):
+    """Create a list of sliding windows from a time series for one_step_ahead.
+        Args:=
             series (list): Time series
             window_size(int): Size of temporal windows
             number_of_targets(int): The number of outputs from the time window
@@ -35,23 +35,61 @@ def create_list_of_sliding_windows(series, window_size, number_of_targets):
             window_size = 1 and number_of_targets = 1
 
             list_of_sliding_windows = [[1, 2], [2, 3], [4, 5], [5, 6]]
+
+            number_of_windows = len(series) - window_size - hstep 
     """
     list_of_sliding_windows = []
-    list_size_to_iterate = len(series) - window_size - number_of_targets
+    list_size_to_iterate = len(series) - window_size - hstep + 1
     for i in range(0, list_size_to_iterate):
         window = series[i: i + window_size]
-        target = series[i + window_size:  i + number_of_targets + window_size]
-        list_of_sliding_windows.append(window + target)
+        target = series[ i + window_size + hstep - 1]
+        list_of_sliding_windows.append(window + [target])
+   
 
     return list_of_sliding_windows
 
+
+"""
+
+def create_list_of_sliding_windows(series, window_size, hstep = 1 ):
+    Create a list of sliding windows from a time series.
+        Args:
+            series (list): Time series
+            window_size(int): Size of temporal windows
+            hstep(int): The number of step ahead from the time window
+        Returns:
+            List of sliding windows. The list contains a set of sliding windows created according to the parameters
+            window size and number of targets.
+
+            For example, if the parameters are: series = [1, 2, 3, 4, 5, 6],
+            window_size = 1 and number_of_targets = 1
+
+            list_of_sliding_windows = [[1, 2], [2, 3], [4, 5], [5, 6]]
+
+            number_of_windows = number_of_observations - window_size
+    
+    
+    list_of_sliding_windows = []
+
+    if hstep == 1:
+        list_of_sliding_windows = create_list_of_sliding_windows_one_step(series, window_size)
+
+    else:
+        #change to multi-step-ahed
+        list_of_sliding_windows = create_list_of_sliding_windows_one_step(series, window_size)
+   
+
+    return list_of_sliding_windows
+"""
 
 def create_windows_to_dataframe(series, window_size, number_of_targets):
     """Create a data frame of sliding windows from a time series.
         Args:
             series (Data frame): Time series
             window_size(int): Size of temporal windows
-            number_of_targets(int): The number of outputs from the time window
+            number_of_targets(int): The number of outputs from the time window (h step ahead??)
+
+
         Returns:
             Data frame of sliding windows. The DataFrame contains a set of sliding windows created according to the
             parameters window size and number of targets.
@@ -223,7 +261,7 @@ if __name__ == '__main__':
 
     path = 'https://raw.githubusercontent.com/EraylsonGaldino/dataset_time_series/master/airline.txt'
     window_size = 6
-    h_step = 1
+    h_step = 5
 
     training_perc = 0.6
     val_perc = 0.2
@@ -232,14 +270,19 @@ if __name__ == '__main__':
 
     print('testing split less lags')
     train_sample, validation_sample, test_sample = split_series(df, training_perc, val_perc)
+
+    print('train size:', train_sample.shape)
     train_window = create_windows_to_numpy(train_sample, window_size, h_step)
     val_window = create_windows_to_numpy(validation_sample, window_size, h_step)
     test_window = create_windows_to_numpy(test_sample, window_size, h_step)
     print(train_window.shape, val_window.shape, test_window.shape)
 
     print('testing split with lags first')
-
+    print('data size:', len(df))
     df_with_sliding_windows = create_windows_to_dataframe(df, window_size, h_step)
     print(df_with_sliding_windows.shape)
     X_train, y_train, X_val, y_val, X_test, y_test = split_series(df_with_sliding_windows, training_perc, val_perc)
     print(X_train.shape, X_val.shape, X_test.shape)
+
+    
+    

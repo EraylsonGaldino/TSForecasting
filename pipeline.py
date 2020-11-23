@@ -45,17 +45,19 @@ def pipeline_1(path_data, window_size=20, h_step=1, training_percentage=0.4, val
 
 import pickle
 
-# Como usar o pipeline?
-import matplotlib.pyplot as plt
+if __name__ == "__main__":    
 
-path = 'https://raw.githubusercontent.com/EraylsonGaldino/dataset_time_series/master/airline.txt'
-pipeline_1(path, training_percentage=0.4, validation_percentage=0.2)  # Pipeline 1
+    # Como usar o pipeline?
+    import matplotlib.pyplot as plt
 
-# Carregamento um Pickle
-pickle_in = open("SVR_HARD.sav", "rb")
-dict_pickle = pickle.load(pickle_in)
+    path = 'https://raw.githubusercontent.com/EraylsonGaldino/dataset_time_series/master/airline.txt'
+    pipeline_1(path, training_percentage=0.4, validation_percentage=0.2)  # Pipeline 1
 
-# Usando dados do Pickle
-plt.plot(dict_pickle['y_test'], label='target')
-plt.plot(dict_pickle['model'].predict(dict_pickle['X_test']), label='predict')
-plt.show()
+    # Carregamento um Pickle
+    pickle_in = open("SVR_HARD.sav", "rb")
+    dict_pickle = pickle.load(pickle_in)
+
+    # Usando dados do Pickle
+    plt.plot(dict_pickle['y_test'], label='target')
+    plt.plot(dict_pickle['model'].predict(dict_pickle['X_test']), label='predict')
+    plt.show()
